@@ -25,5 +25,28 @@ def t(key, lang="pt") -> str:
             "pt": "Tente novamente mais tarde.",
             "en": "Try again later.",
         },
+        "common_question_quantity": {
+            "pt": "Qual item teve maior volume entregue (em quantidade)?",
+            "en": "Which item had the highest delivered volume (in quantity)?",
+        },
+        "common_question_supplier": {
+            "pt": "Qual é o fornecedor que teve maior montante recebido?",
+            "en": "Which supplier received the highest amount?",
+        },
+        "loading_vectordb": {
+            "pt": "Carregando banco de dados vetorial...",
+            "en": "Loading vector database...",
+        },
+        "vectordb_ready": {
+            "pt": "Banco de dados vetorial pronto!",
+            "en": "Vector database ready!",
+        },
+        "quantity": {"pt": "maior volume", "en": "highest volume"},
+        "amount": {"pt": "maior montante", "en": "highest amount"},
+        "clear_history": {
+            "pt": "Limpar histórico",
+            "en": "Clear history",
+        },
     }
+
     return translations[key][lang]

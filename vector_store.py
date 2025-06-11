@@ -7,19 +7,16 @@ def build_vector_index(csv_data: dict, persist_directory: str = "db"):
     Lê todos os CSVs (cada linha vira um documento), gera embeddings e
     constrói um índice Chroma persistido em disco.
     """
-    # Embedding function padrão da OpenAI
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     texts, metadatas, ids = [], [], []
     for filename, df in csv_data.items():
         for idx, row in df.iterrows():
-            # concatena todas as colunas de uma linha
             text = " | ".join(f"{col}: {row[col]}" for col in df.columns)
             texts.append(text)
             metadatas.append({"filename": filename, "row": idx})
             ids.append(f"{filename}-{idx}")
 
-    # Cria/recupera collection no diretório persistente
     vectordb = Chroma.from_texts(
         texts=texts,
         embedding=embeddings,
@@ -38,5 +35,5 @@ def query_vector_index(vectordb, question: str, k: int = 5):
     Cada doc é um objeto com .page_content e .metadata.
     """
     results = vectordb.similarity_search(question, k=k)
-    # results é lista de Document(page_content, metadata)
+
     return results

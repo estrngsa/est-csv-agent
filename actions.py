@@ -1,7 +1,7 @@
 def get_max_item_info(csv_data):
     """
-    Retorna um dicionário com todos os campos do header + os campos do item
-    que teve maior QUANTIDADE.
+    Returns a dictionary with all header fields plus the fields of the item
+    that had the highest QUANTITY.
     """
     max_q = -float("inf")
     best = None
@@ -11,7 +11,6 @@ def get_max_item_info(csv_data):
             q = item.get("QUANTIDADE", 0)
             if q > max_q:
                 max_q = q
-                # copia o header e injeta os campos do item
                 best = {
                     **{f"head_{k}": v for k, v in head.items()},
                     **{f"item_{k}": v for k, v in item.items()},
@@ -21,7 +20,7 @@ def get_max_item_info(csv_data):
 
 def get_max_head_info(csv_data):
     """
-    Retorna um dicionário com todos os campos do header que teve maior VALOR NOTA FISCAL.
+    Returns a dictionary with all header fields for the invoice with the highest INVOICE VALUE.
     """
     max_val = -float("inf")
     best = None

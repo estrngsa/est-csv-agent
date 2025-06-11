@@ -4,8 +4,8 @@ import os
 
 def load_csvs_from_folder(folder_path="data"):
     """
-    Carrega todos os CSVs de uma pasta e retorna um dict {filename: DataFrame}.
-    Se algo der errado, retorna a string "ERROR".
+    Loads all CSV files from a folder and returns a dict {filename: DataFrame}.
+    If something goes wrong, returns the string "ERROR".
     """
     csv_data = {}
     try:
@@ -22,11 +22,11 @@ def load_csvs_from_folder(folder_path="data"):
 
 def build_metadata(csv_data: dict) -> dict:
     """
-    Gera um dicionário de metadados para cada CSV:
-      - número de linhas e colunas
-      - tipos de cada coluna
-      - estatísticas descritivas
-      - top-5 valores mais frequentes em colunas categóricas
+    Generates a metadata dictionary for each CSV:
+      - number of rows and columns
+      - data types of each column
+      - descriptive statistics
+      - top-5 most frequent values in categorical columns
     """
     meta = {}
     for name, df in csv_data.items():
@@ -45,13 +45,12 @@ def build_metadata(csv_data: dict) -> dict:
 
 def mount_nfe(csv_data: dict) -> dict:
     """
-    Monta a estrutura final da NFe a partir dos dados CSV.
+    Builds the final NFe structure from the CSV data.
     """
     nfes = {}
     heads = None
     items = None
 
-    # Preencher as informações da NFe
     for name, df in csv_data.items():
         if name == "202401_NFs_Cabecalho.csv":
             heads = df
@@ -59,7 +58,7 @@ def mount_nfe(csv_data: dict) -> dict:
             items = df
 
     if heads is not None:
-        head_records = heads.to_dict(orient="records")[:5]  # Limit to 2 heads
+        head_records = heads.to_dict(orient="records")
         for record in head_records:
             chave = record.get("CHAVE DE ACESSO")
             if chave is not None:
@@ -79,6 +78,6 @@ def mount_nfe(csv_data: dict) -> dict:
                 items_by_chave[chave].append(record)
 
         for chave, item_list in items_by_chave.items():
-            nfes[chave]["items"] = item_list[:5]
+            nfes[chave]["items"] = item_list
 
     return nfes
