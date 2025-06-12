@@ -47,7 +47,6 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
-*.py,cover
 .hypothesis/
 .pytest_cache/
 cover/
@@ -72,7 +71,7 @@ instance/
 # Sphinx documentation
 docs/_build/
 build/
-temp/
+doc/_build/
 
 # PyBuilder
 target/
@@ -105,13 +104,13 @@ celerybeat.pid
 
 # Environments
 .env
+.env.*
 .venv
-env/
 venv/
 ENV/
+env/
 env.bak/
 venv.bak/
-agent/
 
 # Spyder project settings
 .spyderproject
@@ -131,25 +130,24 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# VS Code settings
-.vscode/
-
-# MacOS
+# OS generated files
 .DS_Store
-
-# Windows
 Thumbs.db
-ehthumbs.db
-Desktop.ini
 
-# PyCharm
+# Editor directories and files
+.vscode/
 .idea/
-*.iml
+*.swp
+*.swo
+*.bak
+*.tmp
 
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile*
+docker-compose*
 db/*
+db
