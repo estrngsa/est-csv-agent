@@ -10,6 +10,8 @@ from utils import t as translation
 from actions import get_max_item_info, get_max_head_info
 
 load_dotenv()
+USE_OPENAI = os.getenv("USE_OPENAI", "false").lower() in ("1", "true", "yes")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 
 
 def t(key):
@@ -23,6 +25,15 @@ def t(key):
 lang_label = "🇧🇷 Português" if not st.session_state.get("lang", False) else "🇺🇸 English"
 st.toggle(lang_label, key="lang", value=st.session_state.get("lang", False))
 st.title(t("title"))
+
+if not USE_OPENAI:
+    st.markdown(
+        "<div style='border:2px solid #f39c12; border-radius:8px; padding:1em; background:#fffbe6; color:#b9770e; text-align:center; font-weight:bold;'>"
+        "Demo mode is not activated, please request the activation."
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.stop()
 
 if "csv_data" not in st.session_state:
     raw = load_csvs_from_folder()
@@ -67,9 +78,7 @@ if user_query:
     if "maior volume" in ql:
         info = get_max_item_info(st.session_state.csv_data)
         reply = (
-            format_summary(
-                info, os.getenv("OPENAI_API_KEY", ""), lang="pt", query=user_query
-            )
+            format_summary(info, OPENAI_API_KEY, lang="pt", query=user_query)
             if info
             else t("error_no_item_found")
         )
@@ -77,9 +86,7 @@ if user_query:
     elif "maior montante" in ql:
         info = get_max_head_info(st.session_state.csv_data)
         reply = (
-            format_summary(
-                info, os.getenv("OPENAI_API_KEY", ""), lang="pt", query=user_query
-            )
+            format_summary(info, OPENAI_API_KEY, lang="pt", query=user_query)
             if info
             else t("error_no_supplier_found")
         )
@@ -91,7 +98,7 @@ if user_query:
                 user_query,
                 docs,
                 st.session_state.csv_meta,
-                os.getenv("OPENAI_API_KEY", ""),
+                OPENAI_API_KEY,
             )
             if st.session_state.csv_meta != "ERROR"
             else t("error_csv")
@@ -99,8 +106,10 @@ if user_query:
 
     assistant_msg = {"role": "assistant", "content": ""}
     st.session_state.history.append(assistant_msg)
+
     placeholder = st.empty()
     display = ""
+
     for c in reply:
         display += c
         placeholder.markdown(display + "▌")
@@ -108,6 +117,7 @@ if user_query:
         time.sleep(0.02)
     placeholder.markdown(display)
     assistant_msg["content"] = display
+
     st.rerun()
 
 st.markdown("---")
