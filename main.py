@@ -22,6 +22,7 @@ def t(key):
         return key
 
 
+st.write(t("language"))
 lang_label = "🇧🇷 Português" if not st.session_state.get("lang", False) else "🇺🇸 English"
 st.toggle(lang_label, key="lang", value=st.session_state.get("lang", False))
 st.title(t("title"))
@@ -60,7 +61,9 @@ if "history" not in st.session_state:
 for msg in st.session_state.history:
     st.chat_message(msg["role"]).write(msg["content"])
 
+st.write("Perguntas comuns:")
 col1, col2 = st.columns(2)
+
 if col1.button(t("common_question_quantity")):
     user_query = t("common_question_quantity")
 elif col2.button(t("common_question_supplier")):
@@ -75,7 +78,7 @@ if user_query:
     st.session_state.history.append({"role": "user", "content": user_query})
     ql = user_query.lower()
 
-    if "maior volume" in ql:
+    if t("quantity") in ql:
         info = get_max_item_info(st.session_state.csv_data)
         reply = (
             format_summary(info, OPENAI_API_KEY, lang="pt", query=user_query)
@@ -83,7 +86,7 @@ if user_query:
             else t("error_no_item_found")
         )
 
-    elif "maior montante" in ql:
+    elif t("amount") in ql:
         info = get_max_head_info(st.session_state.csv_data)
         reply = (
             format_summary(info, OPENAI_API_KEY, lang="pt", query=user_query)

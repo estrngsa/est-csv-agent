@@ -47,6 +47,10 @@ def t(key, lang="pt") -> str:
             "pt": "Limpar histórico",
             "en": "Clear history",
         },
+        "language": {
+            "pt": "Escolha o idioma:",
+            "en": "Choose language:",
+        },
     }
 
     return translations[key][lang]

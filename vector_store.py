@@ -1,5 +1,5 @@
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings  # updated import
+from langchain_community.vectorstores import Chroma  # updated import
 
 
 def build_vector_index(csv_data: dict, persist_directory: str = "db"):
