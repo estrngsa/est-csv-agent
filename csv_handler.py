@@ -3,10 +3,6 @@ import os
 
 
 def load_csvs_from_folder(folder_path="data"):
-    """
-    Loads all CSV files from a folder and returns a dict {filename: DataFrame}.
-    If something goes wrong, returns the string "ERROR".
-    """
     csv_data = {}
     try:
         for filename in os.listdir(folder_path):
@@ -20,33 +16,88 @@ def load_csvs_from_folder(folder_path="data"):
         return "ERROR"
 
 
-def build_metadata(csv_data: dict) -> dict:
-    """
-    Generates a metadata dictionary for each CSV:
-      - number of rows and columns
-      - data types of each column
-      - descriptive statistics
-      - top-5 most frequent values in categorical columns
-    """
+def build_metadata2(csv_data: dict) -> dict:
     meta = {}
-    for name, df in csv_data.items():
-        meta[name] = {
-            "rows": df.shape[0],
-            "cols": df.shape[1],
-            "dtypes": df.dtypes.apply(lambda dt: dt.name).to_dict(),
-            "stats": df.describe(include="all").to_dict(),
-            "top_values": {
-                col: df[col].value_counts().head(5).to_dict()
-                for col in df.select_dtypes(include=["object", "category"]).columns
-            },
-        }
+    first_nfe = next(iter(csv_data.values()), None)
+
+    if first_nfe:
+        head = first_nfe.get("head", {})
+        items = first_nfe.get("items", [])
+        head_fields_with_type = [(k, type(v).__name__) for k, v in head.items()]
+        if items:
+            item_fields_with_type = [(k, type(v).__name__) for k, v in items[0].items()]
+        else:
+            item_fields_with_type = []
+    else:
+        head_fields_with_type = []
+        item_fields_with_type = []
+
+    num_nfes = len(csv_data)
+    items_counts = [len(nfe.get("items", [])) for nfe in csv_data.values()]
+    avg_items_per_nfe = sum(items_counts) / num_nfes if num_nfes > 0 else 0
+
+    from datetime import datetime
+
+    dates = []
+    for nfe in csv_data.values():
+        date_str = nfe.get("head", {}).get("DATA EMISSÃO")
+        if date_str:
+            for fmt in (
+                "%Y-%m-%d",
+                "%d/%m/%Y",
+                "%m/%d/%Y",
+                "%m/%d/%Y %I:%M:%S %p",
+                "%m/%d/%Y %H:%M:%S",
+                "%m/%d/%Y %I:%M:%S %p",
+            ):
+                try:
+                    dates.append(datetime.strptime(date_str.strip(), fmt))
+                    break
+                except Exception:
+                    continue
+            else:
+                try:
+                    import pandas as pd
+
+                    dt = pd.to_datetime(date_str, errors="coerce")
+                    if pd.notnull(dt):
+                        dates.append(dt.to_pydatetime())
+                except Exception:
+                    pass
+    date_range = (
+        (min(dates).strftime("%Y-%m-%d"), max(dates).strftime("%Y-%m-%d"))
+        if dates
+        else (None, None)
+    )
+
+    max_invoice_value = None
+    max_invoice_chave = None
+
+    for chave, nfe in csv_data.items():
+        head = nfe.get("head", {})
+        valor = head.get("VALOR NOTA FISCAL")
+
+        if valor is not None:
+            try:
+                valor_num = float(valor)
+            except Exception:
+                continue
+            if (max_invoice_value is None) or (valor_num > max_invoice_value):
+                max_invoice_value = valor_num
+                max_invoice_chave = chave
+
+    meta["head_fields_with_type"] = head_fields_with_type
+    meta["item_fields_with_type"] = item_fields_with_type
+    meta["avg_items_per_nfe"] = avg_items_per_nfe
+    meta["max_invoice_value"] = max_invoice_value
+    meta["max_invoice_chave"] = max_invoice_chave
+    meta["date_range"] = date_range
+    meta["num_nfes"] = num_nfes
+
     return meta
 
 
 def mount_nfe(csv_data: dict) -> dict:
-    """
-    Builds the final NFe structure from the CSV data.
-    """
     nfes = {}
     heads = None
     items = None

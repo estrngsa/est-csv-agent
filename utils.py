@@ -1,4 +1,8 @@
 from unidecode import unidecode
+import zipfile
+import tarfile
+import tempfile
+import os
 
 
 def clean_input(text: str) -> str:
@@ -51,6 +55,37 @@ def t(key, lang="pt") -> str:
             "pt": "Escolha o idioma:",
             "en": "Choose language:",
         },
+        "upload_label": {
+            "pt": "📂 ZIP ou TAR com os arquivos 202401_NFs_Itens.csv, 202401_NFs_Cabecalho.csv",
+            "en": "📂 ZIP or TAR with the files 202401_NFs_Itens.csv, 202401_NFs_Cabecalho.csv",
+        },
+        "common": {
+            "pt": "Perguntas comuns",
+            "en": "Common questions",
+        },
+        "loading_embeddings": {
+            "pt": "Criando embeddings, aguarde...",
+            "en": "Creating embeddings, please wait...",
+        },
     }
 
     return translations[key][lang]
+
+
+def save_to_temp(uploaded_file):
+    tmp = tempfile.mkdtemp()
+    path = os.path.join(tmp, uploaded_file.name)
+    with open(path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    return path
+
+
+def extract_archive(path):
+    dest = os.path.dirname(path)
+    if path.endswith(".zip"):
+        with zipfile.ZipFile(path, "r") as z:
+            z.extractall(dest)
+    else:
+        with tarfile.open(path, "r:*") as t:
+            t.extractall(dest)
+    return dest
