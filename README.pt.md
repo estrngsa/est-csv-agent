@@ -19,7 +19,7 @@ Um assistente baseado em Streamlit para análise e consulta de arquivos CSV, com
 
 ## Como funciona
 
-1. **Carregamento dos CSVs:** Lê todos os arquivos CSV da pasta `data/`.
+1. **Carregamento dos CSVs:** Lê todos os arquivos CSV de um arquivo ZIP ou TAR com os 202401_NFs_Itens.csv, 202401_NFs_Cabecalho.csv
 2. **Extração de Metadados:** Gera metadados e estatísticas para cada arquivo.
 3. **Indexação Vetorial:** Converte linhas dos CSVs em embeddings e armazena em um banco vetorial Chroma.
 4. **Perguntas e Respostas:** O usuário faz uma pergunta; o sistema recupera trechos relevantes do CSV e monta um prompt para a LLM.
@@ -52,6 +52,10 @@ Um assistente baseado em Streamlit para análise e consulta de arquivos CSV, com
    - Crie um arquivo `.env` com:
      ```
      OPENAI_API_KEY=sk-...
+     USE_OPENAI=
+     CHROMA_K=
+     OPENAI_MODEL=
+     OPENAI_TEMPERATURE=
      ```
 
 5. **Execute o app:**
@@ -77,20 +81,10 @@ est-csv-agent/
 ├── requirements.txt
 ├── utils.py
 ├── vector_store.py
-├── data/
 └── ...
 ```
-
-## Personalização
-
-- **Prompt Engineering:** Veja `prompt_builder.py` para ajustar como os prompts são construídos para a LLM.
-- **Seleção de Modelo:** Altere o modelo em `agent.py` conforme necessário (ex: `gpt-3.5-turbo`, `gpt-4.1-nano`).
-- **Tradução:** Edite `utils.py` para adicionar ou modificar traduções.
-
-## Licença
-
-MIT License
+Disponivel apenas para o Curso de Agentes Autonomos do Instituto I2A2
 
 ---
 
-**Desenvolvido com ❤️ usando Streamlit, LangChain e OpenAI.**
+**Desenvolvido usando Streamlit, LangChain e OpenAI.**

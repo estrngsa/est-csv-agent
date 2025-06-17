@@ -30,7 +30,7 @@ A Streamlit-based assistant for analyzing and querying CSV files, with a focus o
 
 ## How it works
 
-1. **CSV Loading:** Reads all CSVs from the `data/` folder.
+1. **CSV Loading:** Reads all CSVs from a ZIP or TAR file containing `202401_NFs_Itens.csv`, `202401_NFs_Cabecalho.csv`.
 2. **Metadata Extraction:** Builds metadata and statistics for each file.
 3. **Vector Indexing:** Converts CSV rows into embeddings and stores them in a Chroma vector database.
 4. **Question Answering:** User asks a question; the system retrieves relevant CSV chunks and builds a prompt for the LLM.
@@ -59,10 +59,14 @@ A Streamlit-based assistant for analyzing and querying CSV files, with a focus o
 3. **Add your CSV files:**
    - Place your CSV files in the `data/` folder.
 
-4. **Set your OpenAI API key:**
+4. **Set your OpenAI API key and other environment variables:**
    - Create a `.env` file with:
      ```
      OPENAI_API_KEY=sk-...
+     USE_OPENAI=
+     CHROMA_K=
+     OPENAI_MODEL=
+     OPENAI_TEMPERATURE=
      ```
 
 5. **Run the app:**
@@ -88,20 +92,11 @@ est-csv-agent/
 ├── requirements.txt
 ├── utils.py
 ├── vector_store.py
-├── data/
 └── ...
 ```
 
-## Customization
-
-- **Prompt Engineering:** See `prompt_builder.py` to adjust how prompts are built for the LLM.
-- **Model Selection:** Change the model in `agent.py` as needed (e.g., `gpt-3.5-turbo`, `gpt-4.1-nano`).
-- **Translation:** Edit `utils.py` to add or modify translations.
-
-## License
-
-MIT License
+Available only for the Autonomous Agents Course at Instituto I2A2
 
 ---
 
-**Developed with ❤️ using Streamlit, LangChain, and OpenAI.**
+**Developed using Streamlit, LangChain, and OpenAI.**
