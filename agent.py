@@ -3,7 +3,6 @@ from prompt_builder import build_automat_prompt, build_role_task_input
 from utils import clean_input
 import tiktoken
 from pydantic import SecretStr
-import os
 
 
 class CsvAgent:
@@ -14,7 +13,7 @@ class CsvAgent:
         temperature: float = 0,
         timeout: int = 30,
     ):
-        self.model_name = model or os.getenv("OPENAI_MODEL", "gpt-4.1-nano")
+        self.model_name = model
         self.temperature = temperature
         self.api_key = api_key
         self.timeout = timeout
