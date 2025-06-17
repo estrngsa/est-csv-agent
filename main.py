@@ -12,7 +12,7 @@ from actions import get_max_item_info, get_max_head_info
 load_dotenv()
 USE_OPENAI = os.getenv("USE_OPENAI", "false").lower() in ("1", "true", "yes")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-CHROMA_KEY = os.getenv("CHROMA_KEY", 5)
+CHROMA_KEY = os.getenv("CHROMA_K", 5)
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-nano")
 TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.1))
 
